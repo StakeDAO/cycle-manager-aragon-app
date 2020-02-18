@@ -3,8 +3,7 @@ pragma solidity ^0.4.24;
 import "@aragon/os/contracts/apps/AragonApp.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
 
-// TODO: Use SafeMath
-// TODO: If we start from 1 can we minimise the maths
+// TODO: Use SafeMath, maybe not necessary
 contract CycleManager is AragonApp {
     using SafeMath for uint256;
 
@@ -20,7 +19,6 @@ contract CycleManager is AragonApp {
         cycleLength = _cycleLength;
         cycleLengthUpdateCycle = 0;
         cycleLengthUpdateStartTime = getTimestamp();
-
         initialized();
     }
 
@@ -41,14 +39,12 @@ contract CycleManager is AragonApp {
             return cycleLengthUpdateCycle - 1;
         }
 
-        return (getTimestamp() - cycleLengthUpdateStartTime) / cycleLength + cycleLengthUpdateCycle;
+        uint256 timeSinceCycleLengthUpdate = getTimestamp() - cycleLengthUpdateStartTime;
+        return timeSinceCycleLengthUpdate / cycleLength + cycleLengthUpdateCycle;
     }
 
     function currentCycleEnd() public view returns (uint256) {
-//        if (currentCycle() <= cycleLengthUpdateCycle) {
-//            return
-//        }
-
-        return (currentCycle() + 1 - cycleLengthUpdateCycle) * cycleLength + cycleLengthUpdateStartTime;
+        uint256 cyclesUsingCurrentCycleLength = currentCycle() + 1 - cycleLengthUpdateCycle;
+        return cyclesUsingCurrentCycleLength * cycleLength + cycleLengthUpdateStartTime;
     }
 }
