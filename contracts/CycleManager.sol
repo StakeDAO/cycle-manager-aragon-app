@@ -17,8 +17,8 @@ contract CycleManager is AragonApp {
     uint256 public currentCycle;
     uint256 public currentCycleStartTime;
 
-    event ChangeCycleLength(uint256 newCycleLength);
-    event NewCycle(uint256 cycleId);
+    event UpdateCycleLength(uint256 newCycleLength);
+    event StartNextCycle(uint256 cycleId);
 
     function initialize(uint256 _cycleLength) public onlyInit {
         cycleLength = _cycleLength;
@@ -29,14 +29,17 @@ contract CycleManager is AragonApp {
     }
 
     /**
-     * @notice Set the cycle length in seconds
+     * @notice Set the cycle length to `_newCycleLength` seconds
      * @param _newCycleLength The new cycle length in seconds
      */
     function updateCycleLength(uint256 _newCycleLength) external auth(UPDATE_CYCLE_ROLE) {
         pendingCycleLength = _newCycleLength;
-        emit ChangeCycleLength(_newCycleLength);
+        emit UpdateCycleLength(_newCycleLength);
     }
 
+    /**
+     * @notice Start the next cycle
+     */
     function startNextCycle() external auth(START_CYCLE_ROLE) {
         require(getTimestamp() >= currentCycleEnd(), ERROR_CYCLE_NOT_ENDED);
 
@@ -47,7 +50,7 @@ contract CycleManager is AragonApp {
            cycleLength = pendingCycleLength;
         }
 
-        emit NewCycle(currentCycle);
+        emit StartNextCycle(currentCycle);
     }
 
     function currentCycleEnd() public view returns (uint256) {

@@ -134,7 +134,7 @@ contract Template is BaseTemplate, TokenCache {
         internal returns (CycleManager)
     {
         bytes32 _appId = keccak256(abi.encodePacked(apmNamehash("open"), keccak256("cycle-manager")));
-        bytes memory initializeData = abi.encodeWithSelector(CycleManager(0).initialize.selector);
+        bytes memory initializeData = abi.encodeWithSelector(CycleManager(0).initialize.selector, 50);
         return CycleManager(_installDefaultApp(_dao, _appId, initializeData));
     }
 
@@ -146,7 +146,8 @@ contract Template is BaseTemplate, TokenCache {
     )
         internal
     {
-        _acl.createPermission(_grantee, _app, _app.UPDATE_CYCLE_ROLE(), _manager);
+        _acl.createPermission(ANY_ENTITY, _app, _app.UPDATE_CYCLE_ROLE(), _manager);
+        _acl.createPermission(ANY_ENTITY, _app, _app.START_CYCLE_ROLE(), _manager);
     }
 
     //--------------------------------------------------------------//

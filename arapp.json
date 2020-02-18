@@ -4,6 +4,11 @@
       "name": "Update the cycle length",
       "id": "UPDATE_CYCLE_ROLE",
       "params": []
+    },
+    {
+      "name": "Start the next cycle",
+      "id": "START_CYCLE_ROLE",
+      "params": []
     }
   ],
   "environments": {

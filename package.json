@@ -4,6 +4,7 @@
   "description": "",
   "dependencies": {
     "@aragon/os": "^4.3.0",
+    "ganache-core": "^2.10.2",
     "node-gyp": "^6.1.0"
   },
   "devDependencies": {

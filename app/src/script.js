@@ -12,10 +12,14 @@ app.store(
 
     try {
       switch (event) {
-        case 'Increment':
-          return { ...nextState, count: await getValue() }
-        case 'Decrement':
-          return { ...nextState, count: await getValue() }
+        case 'UpdateCycleLength':
+          return { ...nextState, pendingCycleLength: await getPendingCycleLength() }
+        case 'StartNextCycle':
+          return { ...nextState,
+            cycleLength: await getCycleLength(),
+            currentCycle: await getCurrentCycle(),
+            currentCycleStartTime: await getCurrentCycleStartTime()
+          }
         case events.SYNC_STATUS_SYNCING:
           return { ...nextState, isSyncing: true }
         case events.SYNC_STATUS_SYNCED:
@@ -42,11 +46,26 @@ function initializeState() {
   return async cachedState => {
     return {
       ...cachedState,
-      count: 0,
+      cycleLength: await getCycleLength(),
+      pendingCycleLength: await getPendingCycleLength(),
+      currentCycle: await getCurrentCycle(),
+      currentCycleStartTime: await getCurrentCycleStartTime()
     }
   }
 }
 
-async function getValue() {
-  return parseInt(await app.call('value').toPromise(), 10)
+async function getCycleLength() {
+  return parseInt(await app.call('cycleLength').toPromise(), 10)
+}
+
+async function getPendingCycleLength() {
+  return parseInt(await app.call('pendingCycleLength').toPromise(), 10)
+}
+
+async function getCurrentCycle() {
+  return parseInt(await app.call('currentCycle').toPromise(), 10)
+}
+
+async function getCurrentCycleStartTime() {
+  return parseInt(await app.call('currentCycleStartTime').toPromise(), 10)
 }
