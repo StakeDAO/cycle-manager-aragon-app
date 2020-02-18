@@ -8,43 +8,49 @@ contract CycleManager is AragonApp {
     using SafeMath for uint256;
 
     bytes32 constant public UPDATE_CYCLE_ROLE = keccak256("UPDATE_CYCLE_ROLE");
+    bytes32 constant public START_CYCLE_ROLE = keccak256("START_CYCLE_ROLE");
 
-    event ChangeCycleLength(uint256 newCycleLength);
+    string private constant ERROR_CYCLE_NOT_ENDED = "CYCLE_MANAGER_CYCLE_NOT_ENDED";
 
     uint256 public cycleLength;
-    uint256 public cycleLengthUpdateCycle;
-    uint256 public cycleLengthUpdateStartTime;
+    uint256 public pendingCycleLength;
+    uint256 public currentCycle;
+    uint256 public currentCycleStartTime;
+
+    event ChangeCycleLength(uint256 newCycleLength);
+    event NewCycle(uint256 cycleId);
 
     function initialize(uint256 _cycleLength) public onlyInit {
         cycleLength = _cycleLength;
-        cycleLengthUpdateCycle = 0;
-        cycleLengthUpdateStartTime = getTimestamp();
+        pendingCycleLength = _cycleLength;
+        currentCycle = 0;
+        currentCycleStartTime = getTimestamp();
         initialized();
     }
 
     /**
      * @notice Set the cycle length in seconds
-     * @param _newCycleLength The new cycle length
+     * @param _newCycleLength The new cycle length in seconds
      */
     function updateCycleLength(uint256 _newCycleLength) external auth(UPDATE_CYCLE_ROLE) {
-        cycleLengthUpdateCycle = currentCycle() + 1;
-        cycleLengthUpdateStartTime = currentCycleEnd();
-        cycleLength = _newCycleLength;
-
+        pendingCycleLength = _newCycleLength;
         emit ChangeCycleLength(_newCycleLength);
     }
 
-    function currentCycle() public view returns (uint256) {
-        if (getTimestamp() < cycleLengthUpdateStartTime) {
-            return cycleLengthUpdateCycle - 1;
+    function startNextCycle() external auth(START_CYCLE_ROLE) {
+        require(getTimestamp() >= currentCycleEnd(), ERROR_CYCLE_NOT_ENDED);
+
+        currentCycle++;
+        currentCycleStartTime = getTimestamp();
+
+        if (cycleLength != pendingCycleLength) {
+           cycleLength = pendingCycleLength;
         }
 
-        uint256 timeSinceCycleLengthUpdate = getTimestamp() - cycleLengthUpdateStartTime;
-        return timeSinceCycleLengthUpdate / cycleLength + cycleLengthUpdateCycle;
+        emit NewCycle(currentCycle);
     }
 
     function currentCycleEnd() public view returns (uint256) {
-        uint256 cyclesUsingCurrentCycleLength = currentCycle() + 1 - cycleLengthUpdateCycle;
-        return cyclesUsingCurrentCycleLength * cycleLength + cycleLengthUpdateStartTime;
+        return currentCycleStartTime + cycleLength;
     }
 }
