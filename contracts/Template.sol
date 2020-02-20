@@ -115,51 +115,16 @@ contract Template is BaseTemplate, TokenCache {
         _createTokenManagerPermissions(_acl, _tokenManager, _voting, _voting);
     }
 
-    // Next we install and create permissions for the cycle-manager app
-    //--------------------------------------------------------------//
-    function _setupCustomApp(
-        Kernel _dao,
-        ACL _acl,
-        Voting _voting
-    )
-        internal
-    {
-        CycleManager app = _installCycleManager(_dao);
-        _createCycleManagerPermissions(_acl, app, _voting, _voting);
-    }
-
-    function _installCycleManager(
-        Kernel _dao
-    )
-        internal returns (CycleManager)
-    {
+    function _setupCustomApp(Kernel _dao, ACL _acl, Voting _voting) internal {
         bytes32 _appId = keccak256(abi.encodePacked(apmNamehash("open"), keccak256("cycle-manager")));
         bytes memory initializeData = abi.encodeWithSelector(CycleManager(0).initialize.selector, 50);
-        return CycleManager(_installDefaultApp(_dao, _appId, initializeData));
+        CycleManager app = CycleManager(_installDefaultApp(_dao, _appId, initializeData));
+
+        _acl.createPermission(ANY_ENTITY, app, app.UPDATE_CYCLE_ROLE(), _voting);
+        _acl.createPermission(ANY_ENTITY, app, app.START_CYCLE_ROLE(), _voting);
     }
 
-    function _createCycleManagerPermissions(
-        ACL _acl,
-        CycleManager _app,
-        address _grantee,
-        address _manager
-    )
-        internal
-    {
-        _acl.createPermission(ANY_ENTITY, _app, _app.UPDATE_CYCLE_ROLE(), _manager);
-        _acl.createPermission(ANY_ENTITY, _app, _app.START_CYCLE_ROLE(), _manager);
-    }
-
-    //--------------------------------------------------------------//
-
-    function _ensureTemplateSettings(
-        address[] memory _holders,
-        uint256[] memory _stakes,
-        uint64[3] memory _votingSettings
-    )
-        private
-        pure
-    {
+    function _ensureTemplateSettings(address[] memory _holders, uint256[] memory _stakes, uint64[3] memory _votingSettings) private pure {
         require(_holders.length > 0, ERROR_EMPTY_HOLDERS);
         require(_holders.length == _stakes.length, ERROR_BAD_HOLDERS_STAKES_LEN);
         require(_votingSettings.length == 3, ERROR_BAD_VOTE_SETTINGS);

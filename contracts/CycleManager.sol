@@ -2,9 +2,10 @@ pragma solidity ^0.4.24;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
+import "./ICycleManager.sol";
 
 // TODO: Use SafeMath, maybe not necessary
-contract CycleManager is AragonApp {
+contract CycleManager is AragonApp, ICycleManager {
     using SafeMath for uint256;
 
     bytes32 constant public UPDATE_CYCLE_ROLE = keccak256("UPDATE_CYCLE_ROLE");

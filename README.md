@@ -8,6 +8,7 @@ Install dependencies:
 ```
 $ npm install
 ```
+May require `npm install node-gyp` first
 
 ### Test
 ```
