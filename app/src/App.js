@@ -14,7 +14,12 @@ import styled from 'styled-components'
 
 function App() {
   const { api, appState } = useAragonApi()
-  const { cycleLength, pendingCycleLength, currentCycle, currentCycleStartTime, isSyncing } = appState
+  const { cycleLength,
+    pendingCycleLength,
+    currentCycle,
+    currentCycleStartTime,
+    currentCycleEndTime,
+    isSyncing } = appState
 
   const [newCycleLength, setNewCycleLength] = useState(0)
 
@@ -41,16 +46,22 @@ function App() {
           ${textStyle('title3')};
         `}
       >
-        Cycle Length: {cycleLength} <br/>
-        Pending Cycle Length: {pendingCycleLength} <br/>
         Current Cycle: {currentCycle} <br/>
         Current Cycle Start Time: {currentCycleStartTime} <br/>
-        <Buttons>
-          <Button
-            label="Start Next Cycle"
-            onClick={() => api.startNextCycle().toPromise()}
-          />
+        Current Cycle End Time: {currentCycleEndTime} <br/>
 
+        <Button
+          css={`margin-top: 20px;
+          margin-bottom: 20px;`}
+          label="Start Next Cycle"
+          onClick={() => api.startNextCycle().toPromise()}
+        />
+
+        <br/>
+        Cycle Length: {cycleLength} <br/>
+        Pending Cycle Length: {pendingCycleLength} <br/>
+
+        <Buttons>
           <div>
             <TextInput
               value={newCycleLength}

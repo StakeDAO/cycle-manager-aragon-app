@@ -18,7 +18,8 @@ app.store(
           return { ...nextState,
             cycleLength: await getCycleLength(),
             currentCycle: await getCurrentCycle(),
-            currentCycleStartTime: await getCurrentCycleStartTime()
+            currentCycleStartTime: await getCurrentCycleStartTime(),
+            currentCycleEndTime: await getCurrentCycleEndTime()
           }
         case events.SYNC_STATUS_SYNCING:
           return { ...nextState, isSyncing: true }
@@ -49,7 +50,8 @@ function initializeState() {
       cycleLength: await getCycleLength(),
       pendingCycleLength: await getPendingCycleLength(),
       currentCycle: await getCurrentCycle(),
-      currentCycleStartTime: await getCurrentCycleStartTime()
+      currentCycleStartTime: await getCurrentCycleStartTime(),
+      currentCycleEndTime: await getCurrentCycleEndTime()
     }
   }
 }
@@ -68,4 +70,9 @@ async function getCurrentCycle() {
 
 async function getCurrentCycleStartTime() {
   return parseInt(await app.call('currentCycleStartTime').toPromise(), 10)
+}
+
+async function getCurrentCycleEndTime() {
+  console.log("End Time DO: ")
+  return parseInt(await app.call('currentCycleEndTime').toPromise(), 10)
 }

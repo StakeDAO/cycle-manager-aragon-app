@@ -42,7 +42,7 @@ contract CycleManager is AragonApp, ICycleManager {
      * @notice Start the next cycle
      */
     function startNextCycle() external auth(START_CYCLE_ROLE) {
-        require(getTimestamp() >= currentCycleEnd(), ERROR_CYCLE_NOT_ENDED);
+        require(getTimestamp() >= currentCycleEndTime(), ERROR_CYCLE_NOT_ENDED);
 
         currentCycle++;
         currentCycleStartTime = getTimestamp();
@@ -54,7 +54,7 @@ contract CycleManager is AragonApp, ICycleManager {
         emit StartNextCycle(currentCycle);
     }
 
-    function currentCycleEnd() public view returns (uint256) {
+    function currentCycleEndTime() public view returns (uint256) {
         return currentCycleStartTime + cycleLength;
     }
 }
