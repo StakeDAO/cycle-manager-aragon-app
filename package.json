@@ -49,9 +49,9 @@
     "test": "cross-env TRUFFLE_TEST=true npm run ganache-cli:test",
     "coverage": "cross-env SOLIDITY_COVERAGE=true npm run ganache-cli:test",
     "ganache-cli:test": "sh ./node_modules/@aragon/test-helpers/ganache-cli.sh",
-    "publish:patch": "aragon apm publish patch",
-    "publish:minor": "aragon apm publish minor",
-    "publish:major": "aragon apm publish major",
+    "publish:patch": "aragon apm publish patch --files dist",
+    "publish:minor": "aragon apm publish minor --files dist",
+    "publish:major": "aragon apm publish major --files dist",
     "versions": "aragon apm versions"
   }
 }

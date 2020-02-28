@@ -73,6 +73,5 @@ async function getCurrentCycleStartTime() {
 }
 
 async function getCurrentCycleEndTime() {
-  console.log("End Time DO: ")
   return parseInt(await app.call('currentCycleEndTime').toPromise(), 10)
 }
