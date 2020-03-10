@@ -117,6 +117,7 @@ contract Template is BaseTemplate, TokenCache {
 
     function _setupCustomApp(Kernel _dao, ACL _acl, Voting _voting) internal {
         bytes32 _appId = keccak256(abi.encodePacked(apmNamehash("open"), keccak256("cycle-manager")));
+
         bytes memory initializeData = abi.encodeWithSelector(CycleManager(0).initialize.selector, 60);
         CycleManager app = CycleManager(_installDefaultApp(_dao, _appId, initializeData));
 
